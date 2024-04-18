@@ -92,6 +92,7 @@ public class NoticeService {
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE)); // 공지사항 조회
 
         validationMember(notice, member);
+        deleteAttachments(notice.getAttachmentIds()); // 업로드 했던 첨부파일들을 함께 삭제
         noticeRepository.delete(notice);
     }
 
