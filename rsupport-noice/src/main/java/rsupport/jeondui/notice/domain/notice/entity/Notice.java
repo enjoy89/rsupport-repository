@@ -20,6 +20,7 @@ import lombok.NoArgsConstructor;
 import rsupport.jeondui.notice.common.base.BaseTimeEntity;
 import rsupport.jeondui.notice.domain.attachment.entity.Attachment;
 import rsupport.jeondui.notice.domain.member.entity.Member;
+import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeModifyRequest;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
 
 @Entity
@@ -75,6 +76,19 @@ public class Notice extends BaseTimeEntity {
                 .build();
     }
 
+    /**
+     * 공지사항 수정
+     */
+    public void modify(NoticeModifyRequest request) {
+        this.title = request.getTitle();
+        this.content = request.getContent();
+        this.startDateTime = request.getStartDateTime();
+        this.endDateTime = request.getEndDateTime();
+    }
+
+    /**
+     * 조회수 설정
+     */
     public void setViewCount(Long viewCount) {
         this.viewCount = viewCount;
     }
