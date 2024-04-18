@@ -9,6 +9,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -64,7 +65,7 @@ public class NoticeController {
     }
 
     /**
-     * 공지사항 수정 API
+     * 공지사항 수정 API현 (회원 인증 후 동작)
      */
     @PatchMapping("/{noticeId}")
     public Response<Void> modifyNotice(@PathVariable Long noticeId,
@@ -72,5 +73,15 @@ public class NoticeController {
                                        @ModelAttribute @Valid NoticeModifyRequest request) {
         noticeService.modifyNotice(noticeId, userDetails.getId(), request);
         return Response.success(HttpStatus.OK, "공지사항 수정 성공!");
+    }
+
+    /**
+     * 공지사항 삭제 API (회원 인증 후 동작)
+     */
+    @DeleteMapping("/{noticeId}")
+    public Response<Void> deleteNotice(@PathVariable Long noticeId,
+                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+        noticeService.deleteNotice(noticeId, userDetails.getId());
+        return Response.success(HttpStatus.OK, "공지사항 삭제 성공!");
     }
 }

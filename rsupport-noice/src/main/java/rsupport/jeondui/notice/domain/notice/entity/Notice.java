@@ -93,4 +93,13 @@ public class Notice extends BaseTimeEntity {
         this.viewCount = viewCount;
     }
 
+    /**
+     * 해당 공지사항에 해당하는 첨부파일들의 id 리스트 반환
+     */
+    public List<Long> getAttachmentIds() {
+        return attachments.stream()
+                .map(Attachment::getId)
+                .toList();
+    }
+
 }

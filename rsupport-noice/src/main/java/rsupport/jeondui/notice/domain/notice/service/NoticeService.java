@@ -71,7 +71,6 @@ public class NoticeService {
      */
     public void modifyNotice(Long noticeId, Long memberId, NoticeModifyRequest request) {
         Member member = memberService.findById(memberId); // 회원 조회
-
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE)); // 공지사항 조회
 
@@ -82,6 +81,19 @@ public class NoticeService {
         noticeRepository.save(notice);
 
         handleAttachments(notice, request.getFiles(), request.getDeleteAttachmentIds());
+    }
+
+    /**
+     * 공지사항 삭제
+     */
+    public void deleteNotice(Long noticeId, Long memberId) {
+        Member member = memberService.findById(memberId); // 회원 조회
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE)); // 공지사항 조회
+
+        validationMember(notice, member);
+        deleteAttachments(notice.getAttachmentIds()); // 업로드 했던 첨부파일들을 함께 삭제
+        noticeRepository.delete(notice);
     }
 
     /**
@@ -148,5 +160,4 @@ public class NoticeService {
         return collection != null && !collection.isEmpty();
     }
 
-    // TODO: 공지사항 삭제
 }
