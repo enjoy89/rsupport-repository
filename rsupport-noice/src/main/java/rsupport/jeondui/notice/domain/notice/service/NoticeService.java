@@ -3,16 +3,22 @@ package rsupport.jeondui.notice.domain.notice.service;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import rsupport.jeondui.notice.common.aws.AmazonS3Service;
+import rsupport.jeondui.notice.common.exception.ErrorCode;
+import rsupport.jeondui.notice.common.exception.custom.NoticeException;
 import rsupport.jeondui.notice.common.utils.FileUtil;
 import rsupport.jeondui.notice.domain.attachment.entity.Attachment;
 import rsupport.jeondui.notice.domain.attachment.repository.AttachmentRepository;
 import rsupport.jeondui.notice.domain.member.entity.Member;
 import rsupport.jeondui.notice.domain.member.service.MemberService;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
+import rsupport.jeondui.notice.domain.notice.controller.dto.response.NoticeDetailResponse;
+import rsupport.jeondui.notice.domain.notice.controller.dto.response.PagedNoticeResponse;
 import rsupport.jeondui.notice.domain.notice.entity.Notice;
 import rsupport.jeondui.notice.domain.notice.repository.NoticeRepository;
 
@@ -38,6 +44,34 @@ public class NoticeService {
         if (isNotEmptyFile(request.getFiles())) {
             uploadAndSaveAttachments(notice, request.getFiles());
         }
+    }
+
+    /**
+     * 공지사항 전체 조회
+     */
+    public PagedNoticeResponse findAll(Pageable pageable) {
+        Page<Notice> notices = noticeRepository.findAll(pageable);
+        return PagedNoticeResponse.of(notices);
+    }
+
+    /**
+     * 공지사항 상세 조회
+     */
+    public NoticeDetailResponse findById(Long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE));
+        List<String> fileUrls = getFileUrls(notice);
+
+        return NoticeDetailResponse.of(notice, fileUrls);
+    }
+
+    /**
+     * 첨부파일 목록의 URL 리스트를 반환
+     */
+    private List<String> getFileUrls(Notice notice) {
+        return notice.getAttachments().stream()
+                .map(attachment -> amazonS3Service.getFileUrl(attachment.getFileName()))
+                .toList();
     }
 
     /**
