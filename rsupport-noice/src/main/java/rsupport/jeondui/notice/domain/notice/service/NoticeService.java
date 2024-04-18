@@ -17,6 +17,7 @@ import rsupport.jeondui.notice.domain.attachment.repository.AttachmentRepository
 import rsupport.jeondui.notice.domain.member.entity.Member;
 import rsupport.jeondui.notice.domain.member.service.MemberService;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
+import rsupport.jeondui.notice.domain.notice.controller.dto.response.AttachmentResponse;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.NoticeDetailResponse;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.PagedNoticeResponse;
 import rsupport.jeondui.notice.domain.notice.entity.Notice;
@@ -62,17 +63,16 @@ public class NoticeService {
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE));
 
         notice.setViewCount(notice.getViewCount() + 1); // 조회수 증가
-        List<String> fileUrls = getFileUrls(notice);
-
-        return NoticeDetailResponse.of(notice, fileUrls);
+        return NoticeDetailResponse.of(notice, getAttachmentResponse(notice));
     }
 
     /**
-     * 첨부파일 목록의 URL 리스트를 반환
+     * 첨부파일 목록 반환값으로 변환
      */
-    private List<String> getFileUrls(Notice notice) {
+    private List<AttachmentResponse> getAttachmentResponse(Notice notice) {
         return notice.getAttachments().stream()
-                .map(attachment -> amazonS3Service.getFileUrl(attachment.getFileName()))
+                .map(attachment -> AttachmentResponse.of(attachment,
+                        amazonS3Service.getFileUrl(attachment.getFileName())))
                 .toList();
     }
 
@@ -96,6 +96,5 @@ public class NoticeService {
         return !(files == null || files.isEmpty());
     }
 
-    // TODO: 공지사항 수정
     // TODO: 공지사항 삭제
 }
