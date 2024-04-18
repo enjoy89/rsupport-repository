@@ -3,9 +3,12 @@ package rsupport.jeondui.notice.domain.notice.entity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +19,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import rsupport.jeondui.notice.common.base.BaseTimeEntity;
 import rsupport.jeondui.notice.domain.attachment.entity.Attachment;
+import rsupport.jeondui.notice.domain.member.entity.Member;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
 
 @Entity
@@ -43,16 +47,22 @@ public class Notice extends BaseTimeEntity {
     @OneToMany(mappedBy = "notice", cascade = CascadeType.REMOVE, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>(); // 공지사항 첨부 파일 리스트
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     @Builder
-    private Notice(String title, String content, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    private Notice(Member member, String title, String content, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        this.member = member;
         this.title = title;
         this.content = content;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
     }
 
-    public static Notice of(NoticeRegisterRequest request) {
+    public static Notice of(Member member, NoticeRegisterRequest request) {
         return Notice.builder()
+                .member(member)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .startDateTime(request.getStartDateTime())
