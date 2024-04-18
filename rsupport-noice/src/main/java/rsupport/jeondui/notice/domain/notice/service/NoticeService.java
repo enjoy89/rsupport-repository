@@ -60,6 +60,8 @@ public class NoticeService {
     public NoticeDetailResponse findById(Long noticeId) {
         Notice notice = noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE));
+
+        notice.setViewCount(notice.getViewCount() + 1); // 조회수 증가
         List<String> fileUrls = getFileUrls(notice);
 
         return NoticeDetailResponse.of(notice, fileUrls);

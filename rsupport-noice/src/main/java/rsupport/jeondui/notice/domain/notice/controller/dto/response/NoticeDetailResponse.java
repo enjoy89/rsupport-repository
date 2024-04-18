@@ -17,7 +17,7 @@ public class NoticeDetailResponse {
     private LocalDateTime createdAt;        // 공지사항 등록 일시
     private LocalDateTime modifiedAt;       // 공지사항 최종 수정 일시
     private String writer;                  // 작성자
-    private Long viewCount;                 // TODO: 조회수
+    private Long viewCount;                 // 조회수
     private List<String> fileUrls;          // 첨부파일 목록 URL 리스트
 
     @Builder
@@ -47,7 +47,7 @@ public class NoticeDetailResponse {
                 .createdAt(notice.getCreatedAt())
                 .modifiedAt(notice.getModifiedAt())
                 .writer(notice.getMember().getNickname())
-                .viewCount(0L)
+                .viewCount(notice.getViewCount())
                 .fileUrls(fileUrls)
                 .build();
     }

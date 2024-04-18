@@ -2,9 +2,10 @@ package rsupport.jeondui.notice.domain.notice.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rsupport.jeondui.notice.common.response.Response;
 import rsupport.jeondui.notice.common.security.CustomUserDetails;
@@ -43,7 +45,11 @@ public class NoticeController {
      */
     @GetMapping
     public Response<PagedNoticeResponse> findAllNotices(
-            @PageableDefault(sort = "createdAt", direction = Direction.DESC) Pageable pageable) {
+            @RequestParam(required = false, defaultValue = "createdAt") String sort,
+            @RequestParam(required = false, defaultValue = "0") int page,
+            @RequestParam(required = false, defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
         return Response.success(HttpStatus.OK, "공지사항 전체 조회 성공!", noticeService.findAll(pageable));
     }
 

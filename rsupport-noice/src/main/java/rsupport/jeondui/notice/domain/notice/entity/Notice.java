@@ -51,13 +51,17 @@ public class Notice extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Column(name = "notice_view_count")
+    private Long viewCount;
+
     @Builder
-    private Notice(Member member, String title, String content, LocalDateTime startDateTime, LocalDateTime endDateTime) {
+    private Notice(Member member, String title, String content, LocalDateTime startDateTime, LocalDateTime endDateTime, Long viewCount) {
         this.member = member;
         this.title = title;
         this.content = content;
         this.startDateTime = startDateTime;
         this.endDateTime = endDateTime;
+        this.viewCount = viewCount;
     }
 
     public static Notice of(Member member, NoticeRegisterRequest request) {
@@ -67,6 +71,12 @@ public class Notice extends BaseTimeEntity {
                 .content(request.getContent())
                 .startDateTime(request.getStartDateTime())
                 .endDateTime(request.getEndDateTime())
+                .viewCount(0L) // 초기화
                 .build();
     }
+
+    public void setViewCount(Long viewCount) {
+        this.viewCount = viewCount;
+    }
+
 }

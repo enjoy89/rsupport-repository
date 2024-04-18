@@ -10,7 +10,7 @@ public class NoticeResponse {
 
     private Long noticeId;              // 공지사항 고유 번호
     private String title;               // 공지사항 제목
-    private Long viewCount;             // TODO: 조회수
+    private Long viewCount;             // 조회수
     private LocalDateTime createdAt;    // 등록 일시
     private String writer;              // 작성자
 
@@ -27,7 +27,7 @@ public class NoticeResponse {
         return NoticeResponse.builder()
                 .noticeId(notice.getId())
                 .title(notice.getTitle())
-                .viewCount(0L)
+                .viewCount(notice.getViewCount())
                 .createdAt(notice.getCreatedAt())
                 .writer(notice.getMember().getNickname())
                 .build();
