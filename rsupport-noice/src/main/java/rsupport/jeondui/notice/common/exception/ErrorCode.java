@@ -16,10 +16,12 @@ public enum ErrorCode {
     NICKNAME_ALREADY_EXISTS("이미 존재하는 닉네임입니다.", HttpStatus.CONFLICT),
 
     NOT_FOUND_NOTICE("등록된 공지사항을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
+    NOT_FOUND_ATTACHMENT("첨부파일을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST),
 
     INTERNAL_SERVER_ERROR("서버 에러 발생", HttpStatus.INTERNAL_SERVER_ERROR),
     AWS_S3_FILE_UPLOAD_FAIL("AWS S3 파일 업로드 실패", HttpStatus.INTERNAL_SERVER_ERROR),
     AWS_S3_FILE_DELETE_FAIL("AWS S3 파일 삭제 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+
 
     private final String message;
     private final HttpStatus status;

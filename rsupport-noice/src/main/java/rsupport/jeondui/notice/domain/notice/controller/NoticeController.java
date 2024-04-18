@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import rsupport.jeondui.notice.common.response.Response;
 import rsupport.jeondui.notice.common.security.CustomUserDetails;
+import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeModifyRequest;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.NoticeDetailResponse;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.PagedNoticeResponse;
@@ -61,4 +63,14 @@ public class NoticeController {
         return Response.success(HttpStatus.OK, "공지사항 상세 조회 성공!", noticeService.findById(noticeId));
     }
 
+    /**
+     * 공지사항 수정 API
+     */
+    @PatchMapping("/{noticeId}")
+    public Response<Void> modifyNotice(@PathVariable Long noticeId,
+                                       @AuthenticationPrincipal CustomUserDetails userDetails,
+                                       @ModelAttribute @Valid NoticeModifyRequest request) {
+        noticeService.modifyNotice(noticeId, userDetails.getId(), request);
+        return Response.success(HttpStatus.OK, "공지사항 수정 성공!");
+    }
 }

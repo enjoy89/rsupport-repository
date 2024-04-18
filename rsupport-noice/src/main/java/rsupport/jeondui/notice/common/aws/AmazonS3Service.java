@@ -47,9 +47,9 @@ public class AmazonS3Service {
     /**
      * AWS S3에서 첨부 파일 삭제
      */
-    public void deleteFile(String filePath) {
+    public void deleteFile(String fileName) {
         try {
-            s3Client.deleteObject(new DeleteObjectRequest(bucket, filePath));
+            s3Client.deleteObject(new DeleteObjectRequest(bucket, generateFilePath(fileName)));
         } catch (AmazonServiceException e) {
             throw new AmazonS3Exception(ErrorCode.AWS_S3_FILE_DELETE_FAIL);
         }
