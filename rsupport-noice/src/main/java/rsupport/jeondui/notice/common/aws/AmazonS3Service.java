@@ -59,7 +59,7 @@ public class AmazonS3Service {
      * AWS S3에 업로드한 파일 객체 URL 반환
      */
     public String getFileUrl(String fileName) {
-        return s3Client.getUrl(bucket, fileName).toString();
+        return s3Client.getUrl(bucket, generateFilePath(fileName)).toString();
     }
 
     /**
