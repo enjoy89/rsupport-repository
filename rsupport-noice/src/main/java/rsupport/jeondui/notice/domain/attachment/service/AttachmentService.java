@@ -23,7 +23,6 @@ public class AttachmentService {
     private final AttachmentRepository attachmentRepository;
     private final AmazonS3Service amazonS3Service;
 
-
     /**
      * 첨부파일 업로드 후 저장
      */

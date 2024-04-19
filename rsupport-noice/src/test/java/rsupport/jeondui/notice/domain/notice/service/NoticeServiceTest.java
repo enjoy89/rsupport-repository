@@ -19,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.util.ReflectionTestUtils;
 import rsupport.jeondui.notice.common.exception.ErrorCode;
 import rsupport.jeondui.notice.common.exception.custom.NoticeException;
+import rsupport.jeondui.notice.domain.attachment.service.AttachmentService;
 import rsupport.jeondui.notice.domain.member.entity.Member;
 import rsupport.jeondui.notice.domain.member.entity.Role;
 import rsupport.jeondui.notice.domain.member.repository.MemberRepository;
@@ -37,6 +38,8 @@ class NoticeServiceTest {
     private NoticeRepository noticeRepository;
     @Mock
     private MemberRepository memberRepository;
+    @Mock
+    private AttachmentService attachmentService;
     @InjectMocks
     private NoticeService noticeService;
 
