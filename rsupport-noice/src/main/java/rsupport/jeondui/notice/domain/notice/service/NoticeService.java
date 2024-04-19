@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,6 +32,7 @@ import rsupport.jeondui.notice.domain.notice.repository.NoticeRepository;
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
+@EnableAsync
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
@@ -131,7 +134,8 @@ public class NoticeService {
     /**
      * 첨부파일 삭제
      */
-    private void deleteAttachments(List<Long> attachmentIds) {
+    @Async
+    public void deleteAttachments(List<Long> attachmentIds) {
         attachmentIds.forEach(attachmentId -> {
             Attachment attachment = attachmentRepository.findById(attachmentId)
                     .orElseThrow(() -> new AttachmentException(ErrorCode.NOT_FOUND_ATTACHMENT));
@@ -143,7 +147,8 @@ public class NoticeService {
     /**
      * 첨부파일 업로드 후 저장
      */
-    private void uploadAndSaveAttachments(Notice notice, List<MultipartFile> files) {
+    @Async
+    public void uploadAndSaveAttachments(Notice notice, List<MultipartFile> files) {
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 String fileName = amazonS3Service.uploadFile(file); // AWS S3 버킷에 첨부파일 업로드
