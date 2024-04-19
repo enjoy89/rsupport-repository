@@ -3,11 +3,13 @@ package rsupport.jeondui.notice.domain.member.controller.dto.request;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class MemberLoginRequest {
 
     @NotBlank(message = "이메일은 필수 입력값입니다.")

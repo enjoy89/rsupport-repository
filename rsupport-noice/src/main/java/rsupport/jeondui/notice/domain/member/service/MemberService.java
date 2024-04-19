@@ -30,14 +30,14 @@ public class MemberService {
     /**
      * 회원 가입
      */
-    public void join(MemberJoinRequest request) {
+    public Member join(MemberJoinRequest request) {
 
         // 사용자 입력값에 대한 검증을 마친 후, 회원가입 로직 실행
         validateExistingMember(request.getEmail());
         validateExistingNickname(request.getNickname());
         validatePassword(request.getPassword(), request.getPasswordConfirm());
 
-        memberRepository.save(Member.of(request, passwordEncoder.encode(request.getPassword())));
+        return memberRepository.save(Member.of(request, passwordEncoder.encode(request.getPassword())));
     }
 
     /**
