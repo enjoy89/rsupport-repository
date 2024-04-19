@@ -9,18 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import rsupport.jeondui.notice.common.aws.AmazonS3Service;
 import rsupport.jeondui.notice.common.exception.ErrorCode;
-import rsupport.jeondui.notice.common.exception.custom.AttachmentException;
 import rsupport.jeondui.notice.common.exception.custom.NoticeException;
-import rsupport.jeondui.notice.common.utils.FileUtil;
-import rsupport.jeondui.notice.domain.attachment.entity.Attachment;
-import rsupport.jeondui.notice.domain.attachment.repository.AttachmentRepository;
+import rsupport.jeondui.notice.domain.attachment.service.AttachmentService;
 import rsupport.jeondui.notice.domain.member.entity.Member;
 import rsupport.jeondui.notice.domain.member.service.MemberService;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeModifyRequest;
 import rsupport.jeondui.notice.domain.notice.controller.dto.request.NoticeRegisterRequest;
-import rsupport.jeondui.notice.domain.notice.controller.dto.response.AttachmentResponse;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.NoticeDetailResponse;
 import rsupport.jeondui.notice.domain.notice.controller.dto.response.PagedNoticeResponse;
 import rsupport.jeondui.notice.domain.notice.entity.Notice;
@@ -33,8 +28,7 @@ import rsupport.jeondui.notice.domain.notice.repository.NoticeRepository;
 public class NoticeService {
 
     private final NoticeRepository noticeRepository;
-    private final AttachmentRepository attachmentRepository;
-    private final AmazonS3Service amazonS3Service;
+    private final AttachmentService attachmentService;
     private final MemberService memberService;
 
     /**
@@ -63,7 +57,7 @@ public class NoticeService {
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE));
 
         notice.setViewCount(notice.getViewCount() + 1); // 조회수 증가
-        return NoticeDetailResponse.of(notice, getAttachmentResponse(notice));
+        return NoticeDetailResponse.of(notice, attachmentService.getAttachmentResponse(notice));
     }
 
     /**
@@ -92,18 +86,8 @@ public class NoticeService {
                 .orElseThrow(() -> new NoticeException(ErrorCode.NOT_FOUND_NOTICE)); // 공지사항 조회
 
         validationMember(notice, member);
-        deleteAttachments(notice.getAttachmentIds()); // 업로드 했던 첨부파일들을 함께 삭제
+        attachmentService.deleteAttachments(notice.getAttachmentIds()); // 업로드 했던 첨부파일들을 함께 삭제
         noticeRepository.delete(notice);
-    }
-
-    /**
-     * 첨부파일 목록 반환값으로 변환
-     */
-    private List<AttachmentResponse> getAttachmentResponse(Notice notice) {
-        return notice.getAttachments().stream()
-                .map(attachment -> AttachmentResponse.of(attachment,
-                        amazonS3Service.getFileUrl(attachment.getFileName())))
-                .toList();
     }
 
     /**
@@ -120,36 +104,11 @@ public class NoticeService {
      */
     private void handleAttachments(Notice notice, List<MultipartFile> files, List<Long> deleteAttachmentIds) {
         if (isNotEmpty(deleteAttachmentIds)) {
-            deleteAttachments(deleteAttachmentIds);
+            attachmentService.deleteAttachments(deleteAttachmentIds);
         }
 
         if (isNotEmpty(files)) {
-            uploadAndSaveAttachments(notice, files);
-        }
-    }
-
-    /**
-     * 첨부파일 삭제
-     */
-    private void deleteAttachments(List<Long> attachmentIds) {
-        attachmentIds.forEach(attachmentId -> {
-            Attachment attachment = attachmentRepository.findById(attachmentId)
-                    .orElseThrow(() -> new AttachmentException(ErrorCode.NOT_FOUND_ATTACHMENT));
-            amazonS3Service.deleteFile(attachment.getFileName());
-            attachmentRepository.delete(attachment);
-        });
-    }
-
-    /**
-     * 첨부파일 업로드 후 저장
-     */
-    private void uploadAndSaveAttachments(Notice notice, List<MultipartFile> files) {
-        for (MultipartFile file : files) {
-            if (!file.isEmpty()) {
-                String fileName = amazonS3Service.uploadFile(file); // AWS S3 버킷에 첨부파일 업로드
-                String fileType = FileUtil.getExtension(fileName);
-                attachmentRepository.save(Attachment.of(notice, fileName, fileType)); // 첨부파일 객체 생성 후 저장
-            }
+            attachmentService.uploadAndSaveAttachments(notice, files);
         }
     }
 
