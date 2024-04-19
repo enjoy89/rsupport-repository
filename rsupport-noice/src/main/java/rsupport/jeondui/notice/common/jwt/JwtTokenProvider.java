@@ -1,5 +1,8 @@
 package rsupport.jeondui.notice.common.jwt;
 
+import static rsupport.jeondui.notice.common.jwt.JwtTokenValidationResult.invalid;
+import static rsupport.jeondui.notice.common.jwt.JwtTokenValidationResult.valid;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +11,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -20,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
+import rsupport.jeondui.notice.common.exception.ErrorCode;
 import rsupport.jeondui.notice.common.security.CustomUserDetails;
 
 @Component
@@ -89,23 +94,26 @@ public class JwtTokenProvider {
     /**
      * 토큰 검증
      */
-    public boolean validateToken(String token) {
+    public JwtTokenValidationResult validateToken(String token) {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
+            return valid(); //
+        } catch (SignatureException | SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
+            return invalid(ErrorCode.INVALID_TOKEN); // 유효하지 않은 토큰 에러 반환
         } catch (ExpiredJwtException e) {
             log.info("Expired JWT Token", e);
+            return invalid(ErrorCode.TOKEN_EXPIRED); // 만료된 토큰 에러 반환
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT Token", e);
+            return invalid(ErrorCode.UNSUPPORTED_TOKEN); // 지원하지 않는 형식 토큰 에러 반환
         } catch (IllegalArgumentException e) {
             log.info("JWT claims string is empty.", e);
+            return invalid(ErrorCode.NOT_FOUND_TOKEN); // 토큰의 클레임이 비어 있는 경우 에러 반환
         }
-        return false;
     }
 
     /**
