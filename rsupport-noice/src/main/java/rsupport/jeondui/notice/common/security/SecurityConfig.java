@@ -28,14 +28,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-                .httpBasic(httpBasic -> httpBasic.disable())
-                .csrf(csrf -> csrf.disable())
-                .cors(cors -> cors.disable())
+                .httpBasic(httpBasic -> httpBasic.disable()) // 기본 인증 비활성화
+                .csrf(csrf -> csrf.disable())                // CSRF 보호 비활성화
+                .cors(cors -> cors.disable())                // CORS 설정 비활성화
+
+                // 모든 HTTP 요청에 대해 접근 허용
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/**").permitAll())
-                .formLogin(formLogin -> formLogin.disable())
+
+                .formLogin(formLogin -> formLogin.disable()) // 폼 로그인 기능 비활성화
+
+                // 세션 설정 (STATELESS)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .logout(logout -> logout.logoutSuccessUrl("/api/members/login"))
+
+                // UsernamePasswordAuthenticationFilter 앞 JwtAuthenticationFilter 추가
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();

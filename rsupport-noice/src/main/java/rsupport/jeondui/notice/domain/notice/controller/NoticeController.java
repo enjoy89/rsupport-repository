@@ -51,7 +51,6 @@ public class NoticeController {
             @RequestParam(required = false, defaultValue = "createdAt") String sort,
             @RequestParam(required = false, defaultValue = "0") int page,
             @RequestParam(required = false, defaultValue = "10") int size) {
-
         Pageable pageable = PageRequest.of(page, size, Sort.by(Direction.DESC, sort));
         return Response.success(HttpStatus.OK, "공지사항 전체 조회 성공!", noticeService.findAll(pageable));
     }

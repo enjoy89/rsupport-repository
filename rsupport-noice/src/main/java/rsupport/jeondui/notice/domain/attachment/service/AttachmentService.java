@@ -45,7 +45,7 @@ public class AttachmentService {
         attachmentIds.forEach(attachmentId -> {
             Attachment attachment = attachmentRepository.findById(attachmentId)
                     .orElseThrow(() -> new AttachmentException(ErrorCode.NOT_FOUND_ATTACHMENT));
-            amazonS3Service.deleteFile(attachment.getFileName());
+            amazonS3Service.deleteFile(attachment.getFileName());   // AWS S3 버킷에서 파일 삭제
             attachmentRepository.delete(attachment);
         });
     }

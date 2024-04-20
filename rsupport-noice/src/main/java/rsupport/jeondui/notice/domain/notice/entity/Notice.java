@@ -72,7 +72,7 @@ public class Notice extends BaseTimeEntity {
                 .content(request.getContent())
                 .startDateTime(request.getStartDateTime())
                 .endDateTime(request.getEndDateTime())
-                .viewCount(0L) // 초기화
+                .viewCount(0L) // 0으로 초기화
                 .build();
     }
 
