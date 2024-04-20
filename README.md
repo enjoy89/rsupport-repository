@@ -16,7 +16,7 @@
 
 <br>
 
-## 👏 작업 흐름 (feat. Branch 전략)
+## 👏 작업 흐름 (Feat. Branch 전략)
 > main branch : 최종 병합 버전 <br>
 > devlop branch : 기능 개발
 >
