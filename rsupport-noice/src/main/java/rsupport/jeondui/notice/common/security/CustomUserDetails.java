@@ -28,7 +28,6 @@ public class CustomUserDetails implements UserDetails {
     /**
      * 권한 반환
      */
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

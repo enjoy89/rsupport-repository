@@ -38,14 +38,14 @@ public class NoticeService {
         Member member = memberService.findById(memberId); // 회원 조회
         Notice notice = noticeRepository.save(Notice.of(member, request)); // 공지사항 객체 생성 후 저장
 
-        handleAttachments(notice, request.getFiles(), null);
+        handleAttachments(notice, request.getFiles(), null); // 첨부파일 등록
     }
 
     /**
      * 공지사항 전체 조회
      */
     public PagedNoticeResponse findAll(Pageable pageable) {
-        Page<Notice> notices = noticeRepository.findAll(pageable);
+        Page<Notice> notices = noticeRepository.findAll(pageable); // 페이징 처리
         return PagedNoticeResponse.of(notices);
     }
 
@@ -74,7 +74,7 @@ public class NoticeService {
         notice.modify(request);
         noticeRepository.save(notice);
 
-        handleAttachments(notice, request.getFiles(), request.getDeleteAttachmentIds());
+        handleAttachments(notice, request.getFiles(), request.getDeleteAttachmentIds()); // 첨부파일 수정
     }
 
     /**

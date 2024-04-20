@@ -100,7 +100,7 @@ public class JwtTokenProvider {
                     .setSigningKey(key)
                     .build()
                     .parseClaimsJws(token);
-            return valid(); //
+            return valid(); // 유효한 토큰
         } catch (SignatureException | SecurityException | MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
             return invalid(ErrorCode.INVALID_TOKEN); // 유효하지 않은 토큰 에러 반환

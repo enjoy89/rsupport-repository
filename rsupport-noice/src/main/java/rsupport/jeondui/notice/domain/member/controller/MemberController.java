@@ -2,7 +2,6 @@ package rsupport.jeondui.notice.domain.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,23 +22,31 @@ import rsupport.jeondui.notice.domain.member.service.MemberService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/members")
-@Slf4j
 public class MemberController {
 
     private final MemberService memberService;
 
+    /**
+     * 회원가입 API
+     */
     @PostMapping("/join")
     public Response<Void> join(@ModelAttribute @Valid MemberJoinRequest request) {
         memberService.join(request);
         return Response.success(HttpStatus.CREATED, "회원 가입 성공!");
     }
 
+    /**
+     * 로그인 API
+     */
     @PostMapping("/login")
     public Response<MemberLoginResponse> login(@ModelAttribute @Valid MemberLoginRequest request) {
         JwtToken jwtToken = memberService.login(request);
         return Response.success(HttpStatus.OK, "로그인 성공!", MemberLoginResponse.of(jwtToken));
     }
 
+    /**
+     * 회원 정보 조회 API
+     */
     @GetMapping
     public Response<MemberDetailsResponse> find(@AuthenticationPrincipal CustomUserDetails userDetails) {
         Member member = memberService.findById(userDetails.getId());
