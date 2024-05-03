@@ -5,7 +5,7 @@
 >
 <br>
 
-- [작업 기록 노션 페이지](https://stupendous-lumber-15e.notion.site/9ae88293619b4aa3ab1aec315a5f26e7) : API 명세서, 데이터베이스 ERD 등 작업, 트러블 슈팅 등 작업 기록을 상세히 작성하였습니다.
+- [작업 기록 노션 페이지](https://jeondui.notion.site/9ae88293619b4aa3ab1aec315a5f26e7?pvs=74) : API 명세서, 데이터베이스 ERD 등 작업, 트러블 슈팅 등 작업 기록을 상세히 작성하였습니다.
 
 <br>
 
