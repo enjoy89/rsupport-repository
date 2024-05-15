@@ -95,19 +95,3 @@
     - 공지사항 내용과 더 나아가서 첨부파일을 삭제하거나, 새로 등록할 수 있습니다.
 6. 공지사항 삭제
     - 수정과 마찬가지로, 공지사항의 작성자의 권한이 확인되면 글 삭제가 가능합니다.
-
-<br>
-
-## 💁🏻‍♀️ 실행 방법
-1. Github 저장소 코드 클론
-   ```
-   git clone https://github.com/enjoy89/rsupport-repository.git
-   ```
-2. 프로젝트 빌드
-   ```
-   ./gradlew clean build
-   ```
-4. Spring Boot 애플리케이션 실행
-   ```
-   java -jar rsupport-noice-0.0.1-SNAPSHOT.jar
-   ```
